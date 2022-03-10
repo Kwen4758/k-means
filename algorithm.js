@@ -10,6 +10,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
+var canvas_1 = require("canvas");
 var classes_1 = require("./classes");
 var readInputData = function (fileName) {
     var rawData = fs.readFileSync(fileName, 'utf8').split(/\s+/g);
@@ -21,24 +22,29 @@ var readInputData = function (fileName) {
     return formattedData;
 };
 var writeOutputData = function (fileName, centroids, numIterations) {
-    var report = {
-        'Number of Iterations': numIterations,
-        Clusters: [],
-    };
     var txt = '';
     centroids.forEach(function (centroid, index) {
-        var myReport = {
-            'Cluster Centroid': { x: centroid.x, y: centroid.y },
-            'Cluster Settled?': centroid.settled,
-            'Data Points': centroid.cluster,
-        };
-        report['Clusters'].push(myReport);
         centroid.cluster.forEach(function (datapoint) {
             txt += "".concat(datapoint.x, "\t\t").concat(datapoint.y, "\t\t").concat(index + 1, "\n");
         });
     });
-    fs.writeFileSync("".concat(fileName, "_report.json"), JSON.stringify(report, null, '\t'));
-    fs.writeFileSync("".concat(fileName, ".txt"), txt);
+    fs.writeFileSync("".concat(fileName), txt);
+};
+var drawOutputData = function (centroids, fileName) {
+    var canvas = (0, canvas_1.createCanvas)(1000, 1000, 'svg');
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 1000, 1000);
+    var colors = ['red', 'green', 'blue', 'black'];
+    centroids.forEach(function (centroid, i) {
+        ctx.fillStyle = colors[i];
+        centroid.cluster.forEach(function (datapoint) {
+            ctx.beginPath();
+            ctx.arc(datapoint.x, datapoint.y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+    });
+    fs.writeFileSync(fileName, canvas.toBuffer());
 };
 var getRandomCentroids = function (data, k) {
     var indexes = Array();
@@ -90,12 +96,13 @@ var recalculateCentroids = function (data, centroids) {
     return numSame;
 };
 var main = (function () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     var k = +((_a = process.argv[2]) !== null && _a !== void 0 ? _a : 1);
     var inputFileName = (_b = process.argv[3]) !== null && _b !== void 0 ? _b : 'input.txt';
+    var outputFilePrefix = (_d = (_c = process.argv[4]) === null || _c === void 0 ? void 0 : _c.split('.')[0]) !== null && _d !== void 0 ? _d : "".concat(inputFileName.split('.')[0], "_output");
     var data = readInputData(inputFileName);
     var centroids = getRandomCentroids(data, k);
-    var maxIterations = +((_c = process.argv[5]) !== null && _c !== void 0 ? _c : 1000);
+    var maxIterations = +((_e = process.argv[5]) !== null && _e !== void 0 ? _e : 1000);
     var numSame = 0;
     var numIterations = 0;
     while (numSame < centroids.length && numIterations < maxIterations) {
@@ -104,5 +111,7 @@ var main = (function () {
         numSame = recalculateCentroids(data, centroids);
         numIterations++;
     }
-    writeOutputData((_d = process.argv[4]) !== null && _d !== void 0 ? _d : "".concat(inputFileName.split('.')[0], "_output"), centroids, numIterations);
+    writeOutputData(outputFilePrefix + '.txt', centroids, numIterations);
+    if (k < 5)
+        drawOutputData(centroids, outputFilePrefix + '.svg');
 })();

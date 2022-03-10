@@ -1,4 +1,5 @@
 import fs = require('fs');
+import { createCanvas } from 'canvas';
 import { Centroid, Vector2 } from './classes';
 
 const readInputData = (fileName: string) => {
@@ -16,27 +17,30 @@ const writeOutputData = (
   centroids: Centroid[],
   numIterations: number
 ) => {
-  const report = {
-    'Number of Iterations': numIterations,
-    Clusters: [],
-  };
   let txt = '';
   centroids.forEach((centroid, index) => {
-    const myReport = {
-      'Cluster Centroid': { x: centroid.x, y: centroid.y },
-      'Cluster Settled?': centroid.settled,
-      'Data Points': centroid.cluster,
-    };
-    report['Clusters'].push(myReport);
     centroid.cluster.forEach((datapoint) => {
       txt += `${datapoint.x}\t\t${datapoint.y}\t\t${index + 1}\n`;
     });
   });
-  fs.writeFileSync(
-    `${fileName}_report.json`,
-    JSON.stringify(report, null, '\t')
-  );
-  fs.writeFileSync(`${fileName}.txt`, txt);
+  fs.writeFileSync(`${fileName}`, txt);
+};
+
+const drawOutputData = (centroids: Centroid[], fileName: string) => {
+  const canvas = createCanvas(1000, 1000, 'svg');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, 1000, 1000);
+  const colors = ['red', 'green', 'blue', 'black'];
+  centroids.forEach((centroid, i) => {
+    ctx.fillStyle = colors[i];
+    centroid.cluster.forEach((datapoint) => {
+      ctx.beginPath();
+      ctx.arc(datapoint.x, datapoint.y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+  });
+  fs.writeFileSync(fileName, canvas.toBuffer());
 };
 
 const getRandomCentroids = (data: Vector2[], k: number) => {
@@ -92,6 +96,8 @@ const recalculateCentroids = (data: Vector2[], centroids: Centroid[]) => {
 const main = (() => {
   const k = +(process.argv[2] ?? 1);
   const inputFileName = process.argv[3] ?? 'input.txt';
+  const outputFilePrefix =
+    process.argv[4]?.split('.')[0] ?? `${inputFileName.split('.')[0]}_output`;
   const data = readInputData(inputFileName);
   const centroids = getRandomCentroids(data, k);
   const maxIterations = +(process.argv[5] ?? 1000);
@@ -103,9 +109,6 @@ const main = (() => {
     numSame = recalculateCentroids(data, centroids);
     numIterations++;
   }
-  writeOutputData(
-    process.argv[4] ?? `${inputFileName.split('.')[0]}_output`,
-    centroids,
-    numIterations
-  );
+  writeOutputData(outputFilePrefix + '.txt', centroids, numIterations);
+  if (k < 5) drawOutputData(centroids, outputFilePrefix + '.svg');
 })();
