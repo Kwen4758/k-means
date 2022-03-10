@@ -23,7 +23,7 @@ const writeOutputData = (fileName: string, centroids: Centroid[]) => {
 };
 
 const drawOutputData = (centroids: Centroid[], fileName: string) => {
-  const canvas = createCanvas(1000, 1000, 'svg');
+  const canvas = createCanvas(1000, 1000);
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, 1000, 1000);
@@ -115,5 +115,5 @@ const main = (() => {
     numIterations++;
   }
   writeOutputData(outputFilePrefix + '.txt', centroids);
-  if (k < 9) drawOutputData(centroids, outputFilePrefix + '.svg');
+  if (k < 9) drawOutputData(centroids, outputFilePrefix + '.png');
 })();

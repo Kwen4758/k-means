@@ -11,4 +11,4 @@ All inputs are optional. Default values are:
 
 This program is written in Typescript, and compiled into Javascript.
 
-I am on Mac, meaning I couldn't run the `gen.exe` program, so I created a simple function that visualizes the output data instead. The output data is drawn onto a canvas, colored by cluster/label, and then saved to an svg file.
+I am on Mac, meaning I couldn't run the `gen.exe` program, so I created a simple function that visualizes the output data instead. The output data is drawn onto a canvas, colored by cluster/label, and then saved to a png file.

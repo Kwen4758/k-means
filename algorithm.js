@@ -31,7 +31,7 @@ var writeOutputData = function (fileName, centroids) {
     fs.writeFileSync("".concat(fileName), txt);
 };
 var drawOutputData = function (centroids, fileName) {
-    var canvas = (0, canvas_1.createCanvas)(1000, 1000, 'svg');
+    var canvas = (0, canvas_1.createCanvas)(1000, 1000);
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, 1000, 1000);
@@ -122,5 +122,5 @@ var main = (function () {
     }
     writeOutputData(outputFilePrefix + '.txt', centroids);
     if (k < 9)
-        drawOutputData(centroids, outputFilePrefix + '.svg');
+        drawOutputData(centroids, outputFilePrefix + '.png');
 })();
