@@ -12,11 +12,7 @@ const readInputData = (fileName: string) => {
   return formattedData;
 };
 
-const writeOutputData = (
-  fileName: string,
-  centroids: Centroid[],
-  numIterations: number
-) => {
+const writeOutputData = (fileName: string, centroids: Centroid[]) => {
   let txt = '';
   centroids.forEach((centroid, index) => {
     centroid.cluster.forEach((datapoint) => {
@@ -31,7 +27,16 @@ const drawOutputData = (centroids: Centroid[], fileName: string) => {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, 1000, 1000);
-  const colors = ['red', 'green', 'blue', 'black'];
+  const colors = [
+    'red',
+    'green',
+    'blue',
+    'black',
+    'pink',
+    'yellow',
+    'purple',
+    'orange',
+  ];
   centroids.forEach((centroid, i) => {
     ctx.fillStyle = colors[i];
     centroid.cluster.forEach((datapoint) => {
@@ -109,6 +114,6 @@ const main = (() => {
     numSame = recalculateCentroids(data, centroids);
     numIterations++;
   }
-  writeOutputData(outputFilePrefix + '.txt', centroids, numIterations);
-  if (k < 5) drawOutputData(centroids, outputFilePrefix + '.svg');
+  writeOutputData(outputFilePrefix + '.txt', centroids);
+  if (k < 9) drawOutputData(centroids, outputFilePrefix + '.svg');
 })();

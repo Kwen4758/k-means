@@ -21,7 +21,7 @@ var readInputData = function (fileName) {
     });
     return formattedData;
 };
-var writeOutputData = function (fileName, centroids, numIterations) {
+var writeOutputData = function (fileName, centroids) {
     var txt = '';
     centroids.forEach(function (centroid, index) {
         centroid.cluster.forEach(function (datapoint) {
@@ -35,7 +35,16 @@ var drawOutputData = function (centroids, fileName) {
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, 1000, 1000);
-    var colors = ['red', 'green', 'blue', 'black'];
+    var colors = [
+        'red',
+        'green',
+        'blue',
+        'black',
+        'pink',
+        'yellow',
+        'purple',
+        'orange',
+    ];
     centroids.forEach(function (centroid, i) {
         ctx.fillStyle = colors[i];
         centroid.cluster.forEach(function (datapoint) {
@@ -111,7 +120,7 @@ var main = (function () {
         numSame = recalculateCentroids(data, centroids);
         numIterations++;
     }
-    writeOutputData(outputFilePrefix + '.txt', centroids, numIterations);
-    if (k < 5)
+    writeOutputData(outputFilePrefix + '.txt', centroids);
+    if (k < 9)
         drawOutputData(centroids, outputFilePrefix + '.svg');
 })();
