@@ -8,3 +8,5 @@ All inputs are optional. Default values are:
 > `<input file>`: `input.txt`
 > `<output file>`: `output` (outputs 2 files, `output.json` and `output.txt`)
 > `<max iterations>`: `1000`
+
+This program is written in Typescript, and compiled into Javascript.
