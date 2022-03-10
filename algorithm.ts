@@ -32,7 +32,10 @@ const writeOutputData = (
       txt += `${datapoint.x}\t\t${datapoint.y}\t\t${index + 1}\n`;
     });
   });
-  fs.writeFileSync(`${fileName}.json`, JSON.stringify(report, null, '\t'));
+  fs.writeFileSync(
+    `${fileName}_report.json`,
+    JSON.stringify(report, null, '\t')
+  );
   fs.writeFileSync(`${fileName}.txt`, txt);
 };
 
@@ -88,7 +91,8 @@ const recalculateCentroids = (data: Vector2[], centroids: Centroid[]) => {
 
 const main = (() => {
   const k = +(process.argv[2] ?? 1);
-  const data = readInputData(process.argv[3] ?? 'input.txt');
+  const inputFileName = process.argv[3] ?? 'input.txt';
+  const data = readInputData(inputFileName);
   const centroids = getRandomCentroids(data, k);
   const maxIterations = +(process.argv[5] ?? 1000);
   let numSame = 0;
@@ -99,5 +103,9 @@ const main = (() => {
     numSame = recalculateCentroids(data, centroids);
     numIterations++;
   }
-  writeOutputData(process.argv[4] ?? 'output', centroids, numIterations);
+  writeOutputData(
+    process.argv[4] ?? `${inputFileName.split('.')[0]}_output`,
+    centroids,
+    numIterations
+  );
 })();

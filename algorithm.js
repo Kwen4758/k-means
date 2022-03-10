@@ -37,7 +37,7 @@ var writeOutputData = function (fileName, centroids, numIterations) {
             txt += "".concat(datapoint.x, "\t\t").concat(datapoint.y, "\t\t").concat(index + 1, "\n");
         });
     });
-    fs.writeFileSync("".concat(fileName, ".json"), JSON.stringify(report, null, '\t'));
+    fs.writeFileSync("".concat(fileName, "_report.json"), JSON.stringify(report, null, '\t'));
     fs.writeFileSync("".concat(fileName, ".txt"), txt);
 };
 var getRandomCentroids = function (data, k) {
@@ -92,7 +92,8 @@ var recalculateCentroids = function (data, centroids) {
 var main = (function () {
     var _a, _b, _c, _d;
     var k = +((_a = process.argv[2]) !== null && _a !== void 0 ? _a : 1);
-    var data = readInputData((_b = process.argv[3]) !== null && _b !== void 0 ? _b : 'input.txt');
+    var inputFileName = (_b = process.argv[3]) !== null && _b !== void 0 ? _b : 'input.txt';
+    var data = readInputData(inputFileName);
     var centroids = getRandomCentroids(data, k);
     var maxIterations = +((_c = process.argv[5]) !== null && _c !== void 0 ? _c : 1000);
     var numSame = 0;
@@ -103,5 +104,5 @@ var main = (function () {
         numSame = recalculateCentroids(data, centroids);
         numIterations++;
     }
-    writeOutputData((_d = process.argv[4]) !== null && _d !== void 0 ? _d : 'output', centroids, numIterations);
+    writeOutputData((_d = process.argv[4]) !== null && _d !== void 0 ? _d : "".concat(inputFileName.split('.')[0], "_output"), centroids, numIterations);
 })();
