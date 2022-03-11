@@ -4,5 +4,8 @@
       "target": "ES5",
       "pretty": true,
       "noImplicitThis": true,
+      "rootDir": "src",
+      "outDir": "dist",
+      "skipLibCheck": true
   }
 }

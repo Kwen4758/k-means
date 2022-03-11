@@ -1,6 +1,6 @@
 command syntax:
 ```
-node algorithm.js <number of clusters> <input file> <output file> <max iterations> 
+node dist/algorithm.js <number of clusters> <input file> <output file> <max iterations> 
 ```
 
 All inputs are optional. Default values are:

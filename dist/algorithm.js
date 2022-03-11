@@ -21,7 +21,7 @@ var readInputData = function (fileName) {
     });
     return formattedData;
 };
-var writeOutputData = function (fileName, centroids) {
+var writeOutputData = function (centroids, fileName) {
     var txt = '';
     centroids.forEach(function (centroid, index) {
         centroid.cluster.forEach(function (datapoint) {
@@ -94,8 +94,7 @@ var recalculateCentroids = function (data, centroids) {
         if (centroid.cluster.length === 0) {
             centroid.copy(data[Math.floor(Math.random() * data.length)]);
         }
-        else if (centroid.hasNotChanged()) {
-            centroid.settled = true;
+        else if (!centroid.hasChanged()) {
             numSame++;
         }
         else {
@@ -112,15 +111,12 @@ var main = (function () {
     var data = readInputData(inputFileName);
     var centroids = getRandomCentroids(data, k);
     var maxIterations = +((_e = process.argv[5]) !== null && _e !== void 0 ? _e : 1000);
-    var numSame = 0;
-    var numIterations = 0;
-    while (numSame < centroids.length && numIterations < maxIterations) {
+    for (var numSame = 0, numIterations = 0; numSame < centroids.length && numIterations < maxIterations; numIterations++) {
         centroids.forEach(function (centroid) { return centroid.resetCluster(); });
         assignDataToCentroids(data, centroids);
         numSame = recalculateCentroids(data, centroids);
-        numIterations++;
     }
-    writeOutputData(outputFilePrefix + '.txt', centroids);
+    writeOutputData(centroids, outputFilePrefix + '.txt');
     if (k < 9)
         drawOutputData(centroids, outputFilePrefix + '.png');
 })();

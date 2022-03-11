@@ -47,15 +47,14 @@ var Centroid = /** @class */ (function (_super) {
         var _this = _super.call(this, vec.x, vec.y) || this;
         _this.cluster = [];
         _this.oldCluster = [];
-        _this.settled = false;
         return _this;
     }
-    Centroid.prototype.hasNotChanged = function () {
+    Centroid.prototype.hasChanged = function () {
         for (var i = 0; i < this.cluster.length; i++) {
             if (!this.oldCluster.includes(this.cluster[i]))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     };
     Centroid.prototype.resetCluster = function () {
         this.oldCluster = this.cluster;
