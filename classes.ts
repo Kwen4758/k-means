@@ -30,17 +30,16 @@ export class Vector2 {
 export class Centroid extends Vector2 {
   cluster: Vector2[] = [];
   oldCluster: Vector2[] = [];
-  settled = false;
 
   constructor(vec: Vector2) {
     super(vec.x, vec.y);
   }
 
-  hasNotChanged() {
+  hasChanged() {
     for (let i = 0; i < this.cluster.length; i++) {
-      if (!this.oldCluster.includes(this.cluster[i])) return false;
+      if (!this.oldCluster.includes(this.cluster[i])) return true;
     }
-    return true;
+    return false;
   }
 
   resetCluster() {

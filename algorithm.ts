@@ -12,7 +12,7 @@ const readInputData = (fileName: string) => {
   return formattedData;
 };
 
-const writeOutputData = (fileName: string, centroids: Centroid[]) => {
+const writeOutputData = (centroids: Centroid[], fileName: string) => {
   let txt = '';
   centroids.forEach((centroid, index) => {
     centroid.cluster.forEach((datapoint) => {
@@ -88,8 +88,7 @@ const recalculateCentroids = (data: Vector2[], centroids: Centroid[]) => {
   centroids.forEach((centroid) => {
     if (centroid.cluster.length === 0) {
       centroid.copy(data[Math.floor(Math.random() * data.length)]);
-    } else if (centroid.hasNotChanged()) {
-      centroid.settled = true;
+    } else if (!centroid.hasChanged()) {
       numSame++;
     } else {
       centroid.copy(getClusterMean(centroid.cluster));
@@ -106,14 +105,15 @@ const main = (() => {
   const data = readInputData(inputFileName);
   const centroids = getRandomCentroids(data, k);
   const maxIterations = +(process.argv[5] ?? 1000);
-  let numSame = 0;
-  let numIterations = 0;
-  while (numSame < centroids.length && numIterations < maxIterations) {
+  for (
+    let numSame = 0, numIterations = 0;
+    numSame < centroids.length && numIterations < maxIterations;
+    numIterations++
+  ) {
     centroids.forEach((centroid) => centroid.resetCluster());
     assignDataToCentroids(data, centroids);
     numSame = recalculateCentroids(data, centroids);
-    numIterations++;
   }
-  writeOutputData(outputFilePrefix + '.txt', centroids);
+  writeOutputData(centroids, outputFilePrefix + '.txt');
   if (k < 9) drawOutputData(centroids, outputFilePrefix + '.png');
 })();
